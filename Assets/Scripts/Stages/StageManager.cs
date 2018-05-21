@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Minego;
 
 public enum StageStatus
 {
@@ -10,7 +11,8 @@ public enum StageStatus
     Over
 }
 
-public class StageManager : MonoBehaviour {
+public class StageManager : MonoBehaviour
+{
 
     public string StageName;
     public Player Player1;
@@ -24,7 +26,9 @@ public class StageManager : MonoBehaviour {
     public GameOver UIGameOver;
 
     private StageStatus _status = StageStatus.Pending;
-    [HideInInspector] public StageStatus Status {
+    [HideInInspector]
+    public StageStatus Status
+    {
         get { return _status; }
         private set
         {
@@ -47,7 +51,8 @@ public class StageManager : MonoBehaviour {
         text.fontSize = fontSize * Screen.height / 720;
     }
 
-    void Start () {
+    void Start()
+    {
         TextStageName.text = string.Format("Stage {0}", StageName);
         SetUI(TextScore1, 20f, 0f, 140f, 30f, 26);
         SetUI(TextScore2, -20f, 0f, 140f, 30f, 26);
@@ -55,26 +60,33 @@ public class StageManager : MonoBehaviour {
         SetUI(TextElapsedTime, 124f, 0f, 160f, 30f, 26);
         SetUI(TextWinMessage, 0f, 40f, 500f, 100f, 48);
         SetUI(TextContinue, 0f, -40f, 260f, 30f, 24);
-        this.Status = StageStatus.Started;
+        UpdateScore(Player1, GlobalState.Score1);
+        UpdateScore(Player2, GlobalState.Score2);
+        Status = StageStatus.Started;
     }
 
-    void Update () {
+    void Update()
+    {
         var time = Mathf.FloorToInt(Time.timeSinceLevelLoad);
         TextElapsedTime.text = string.Format("{0:00}:{1:00}", time / 60, time % 60);
-	}
-
-    public void GetPoint(bool isPlayer1, int point)
-    {
-        var player = isPlayer1 ? Player1 : Player2;
-        var textScore = isPlayer1 ? TextScore1 : TextScore2;
-        player.Score += point;
-        textScore.text = string.Format(isPlayer1 ? "1P: {0:0000}" : "2P: {0:0000}", player.Score);
     }
 
-    public void Win(bool isPlayer1)
+    public void GetPoint(Player player, int point)
     {
-        this.Status = StageStatus.Over;
-        TextWinMessage.text = string.Format("Player {0} wins!", isPlayer1 ? 1 : 2);
+        UpdateScore(player, player.Score + point);
+    }
+
+    void UpdateScore(Player player, int score)
+    {
+        var textScore = player.IsPlayer1 ? TextScore1 : TextScore2;
+        player.Score = score;
+        textScore.text = string.Format(Player1.IsPlayer1 ? "1P: {0:0000}" : "2P: {0:0000}", player.Score);
+    }
+
+    public void Win(Player player)
+    {
+        Status = StageStatus.Over;
+        TextWinMessage.text = string.Format("Player {0} wins!", player.IsPlayer1 ? 1 : 2);
         UIGameOver.Show();
     }
 }

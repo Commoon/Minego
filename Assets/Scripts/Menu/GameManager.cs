@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Minego;
 
 public class GameManager : MonoBehaviour {
     private void Start()
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour {
     }
     public void GameStart()
     {
+        GlobalState.Restart();
         SceneManager.LoadScene("Stage 1");
     }
 }
