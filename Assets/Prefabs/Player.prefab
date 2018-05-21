@@ -11,6 +11,21 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1786837035942788}
   m_IsPrefabParent: 1
+--- !u!1 &1231833585989188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4707525161953734}
+  m_Layer: 8
+  m_Name: GroundCheck1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1786837035942788
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +71,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4325039943680600}
   m_Layer: 8
-  m_Name: GroundCheck
+  m_Name: GroundCheck2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,8 +96,21 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1981305648034560}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.188, y: -0.62699986, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4739344518872430}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4707525161953734
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1231833585989188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.627, z: 0}
+  m_LocalPosition: {x: -0.224, y: -0.627, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4739344518872430}
@@ -95,10 +123,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1786837035942788}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.04, y: -7.07, z: -0.03338764}
+  m_LocalPosition: {x: -13, y: -6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4053137818967894}
+  - {fileID: 4707525161953734}
   - {fileID: 4325039943680600}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -177,6 +206,7 @@ MonoBehaviour:
   IsDead: 0
   Villain: {fileID: 0}
   StageManager: {fileID: 0}
+  InvincibleTime: 2
   Score: 0
   LastRespawned: -10
 --- !u!114 &114659122846315886
@@ -194,10 +224,11 @@ MonoBehaviour:
   MoveForce: 250
   MaxSpeed: {x: 5, y: 20}
   JumpForce: 800
-  GroundCheck: {fileID: 4325039943680600}
+  GroundCheck1: {fileID: 4707525161953734}
+  GroundCheck2: {fileID: 4325039943680600}
   EggPrefab: {fileID: 114810995467264906, guid: 5605153957422564a964bf70e23776dc,
     type: 2}
-  Egg: {fileID: 114810995467264906, guid: 5605153957422564a964bf70e23776dc, type: 2}
+  Egg: {fileID: 0}
 --- !u!212 &212658262397926654
 SpriteRenderer:
   m_ObjectHideFlags: 1
