@@ -30,7 +30,6 @@ public class Door : MonoBehaviour, IButtonControlled
     public void Activate()
     {
         Active = true;
-        print(Clockwise);
     }
 
     void Rotate()
