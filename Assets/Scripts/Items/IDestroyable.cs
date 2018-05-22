@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDestroyable{
-    void BeDestroyed();
+namespace Minego
+{
+    public interface IDestroyable
+    {
+        void BeDestroyed();
+    }
 }
