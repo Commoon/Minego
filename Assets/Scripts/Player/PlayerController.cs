@@ -24,7 +24,9 @@ public class PlayerController : MonoBehaviour
     string inputVertical;
     string inputFire;
     string inputJump;
-    bool jump;
+    bool jump = false;
+    bool layEgg = false;
+    bool isLayingEgg = false;
 
     private void Awake()
     {
@@ -49,7 +51,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetButtonDown(inputFire))
         {
-            if (Egg == null)
+            if (Egg == null && !isLayingEgg)
             {
                 var h = Input.GetAxis(inputHorizontal);
                 if (h == 0 || Input.GetAxis(inputVertical) < 0)
@@ -71,6 +73,16 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (player.IsDead)
+        {
+            return;
+        }
+        if (layEgg)
+        {
+            rb2d.velocity = new Vector2(0, rb2d.velocity.y);
+            isLayingEgg = true;
+            layEgg = false;
+        }
+        if (isLayingEgg)
         {
             return;
         }
@@ -111,8 +123,14 @@ public class PlayerController : MonoBehaviour
 
     private void LayEgg()
     {
-        Egg = Instantiate(EggPrefab, transform.position, Quaternion.identity);
+        layEgg = true;
         anim.SetTrigger("LayingEgg");
+    }
+
+    public void CompleteLayingEgg()
+    {
+        Egg = Instantiate(EggPrefab, transform.position, Quaternion.identity);
+        isLayingEgg = false;
     }
 
     private void ThrowEgg(bool toRight)
