@@ -12,28 +12,27 @@ public class PlayerController : MonoBehaviour
     public Transform GroundCheck1;
     public Transform GroundCheck2;
     public Egg EggPrefab;
+    public bool FacingRight;
     [HideInInspector] public Egg Egg = null;
 
-    public bool IsGrounded { get; private set; }
-    public bool FacingRight { get; private set; }
+    public bool IsGrounded { get; set; }
 
     Player player;
     Rigidbody2D rb2d;
+    Animator anim;
     string inputHorizontal;
+    string inputVertical;
     string inputFire;
     string inputJump;
     bool jump;
-
-    private void Start()
-    {
-
-    }
 
     private void Awake()
     {
         player = GetComponent<Player>();
         rb2d = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
         inputHorizontal = "P" + PlayerNumber + " Horizontal";
+        inputVertical = "P" + PlayerNumber + " Vertical";
         inputFire = "P" + PlayerNumber + " Fire";
         inputJump = "P" + PlayerNumber + " Jump";
     }
@@ -52,7 +51,15 @@ public class PlayerController : MonoBehaviour
         {
             if (Egg == null)
             {
-                LayEgg();
+                var h = Input.GetAxis(inputHorizontal);
+                if (h == 0 || Input.GetAxis(inputVertical) < 0)
+                {
+                    LayEgg();
+                }
+                else
+                {
+                    ThrowEgg(h > 0);
+                }
             }
             else
             {
@@ -105,6 +112,13 @@ public class PlayerController : MonoBehaviour
     private void LayEgg()
     {
         Egg = Instantiate(EggPrefab, transform.position, Quaternion.identity);
+        anim.SetTrigger("LayingEgg");
+    }
+
+    private void ThrowEgg(bool toRight)
+    {
+        Egg = Instantiate(EggPrefab, transform.position, Quaternion.identity);
+        Egg.BeThrown(rb2d.velocity, toRight);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

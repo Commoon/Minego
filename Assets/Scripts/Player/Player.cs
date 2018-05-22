@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
+    public const float CenterFromGround = 0.8624f;
+
     public bool IsDead = false;
     public Player Villain;
     public StageManager StageManager;
@@ -44,5 +46,13 @@ public class Player : MonoBehaviour {
     {
         StageManager.GetPoint(Villain, 1);
         IsDead = true;
+    }
+
+    public void BeHitted()
+    {
+        if (!IsDead && !IsInvincible)
+        {
+            Die();
+        }
     }
 }
