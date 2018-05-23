@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class River : MonoBehaviour
 {
-    public float ParticleRadius = 0.1f;
-    public GameObject LiquidParticlePrefab;
-    public float BrownForce = 10f;
-
+    public float ResistiveForce = 40f;
+    public Transform RespawnLocation;
     PolygonCollider2D area;
     List<DynamicParticle> surfaceParticles;
 
@@ -16,47 +14,40 @@ public class River : MonoBehaviour
         area = GetComponent<PolygonCollider2D>();
     }
 
-    // Use this for initialization
-    void Start()
-    {
-        FillWater();
-    }
 
-    void FillWater()
-    {
-        var step = ParticleRadius * 2;
-        var k1 = (area.points[3].x - area.points[0].x) / (area.points[2].y - area.points[0].y);
-        var k2 = (area.points[2].x - area.points[1].x) / (area.points[3].y - area.points[1].y);
-        var b1 = area.points[0].x - k1 * area.points[0].y;
-        var b2 = area.points[1].x - k2 * area.points[1].y;
-        surfaceParticles = new List<DynamicParticle>();
-        for (var i = area.points[3].y; i < area.points[0].y; i += step)
-        {
-            var isSurface = i + step >= area.points[0].y;
-            var right = k2 * i + b2;
-            for (var j = k1 * i + b1; j < right; j += step)
-            {
-                var particle = Instantiate(LiquidParticlePrefab, transform)
-                    .GetComponent<DynamicParticle>();
-                particle.SetLifeTime(0f);
-                particle.SetState(DynamicParticle.STATES.WATER);
-                particle.transform.localScale = new Vector2(step, step);
-                particle.transform.position = transform.position + new Vector3(j, i);
-                particle.gameObject.layer = LayerMask.NameToLayer("Liquids");
-                if (isSurface)
-                {
-                    surfaceParticles.Add(particle);
-                }
-            }
-        }
-    }
-    
     void Update()
     {
-        print(surfaceParticles.Count);
-        foreach (var particle in surfaceParticles)
+    }
+
+    bool CheckPositionInArea(Vector2 v)
+    {
+        var p = new Vector2(transform.position.x, transform.position.y);
+        for (var i = 1; i < area.points.Length; ++i)
         {
-            particle.MoveBrown(BrownForce);
+            var a = p + area.points[i] - v;
+            var b = p + area.points[i - 1] - v;
+            if (a.y * b.x - a.x * b.y > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            var rb2d = collision.attachedRigidbody;
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                var player = collision.GetComponent<Player>();
+                if (!player.IsDead && CheckPositionInArea(collision.transform.position))
+                {
+                    player.Die(RespawnLocation.position);
+                }
+            }
+            rb2d.AddForce(-ResistiveForce * rb2d.velocity.normalized);
         }
     }
 }

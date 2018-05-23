@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
     public const float CenterFromGround = 0.8624f;
 
@@ -10,7 +11,7 @@ public class Player : MonoBehaviour {
     public Player Villain;
     public StageManager StageManager;
     public float InvincibleTime = 2.0f;
-    
+
     public bool IsPlayer1
     {
         get { return pc.PlayerNumber == "1"; }
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour {
         get { return Time.time - LastRespawned <= InvincibleTime; }
     }
 
+    Vector3 RespawnPosition;
     PlayerController pc;
 
     private void Awake()
@@ -29,7 +31,8 @@ public class Player : MonoBehaviour {
         pc = GetComponent<PlayerController>();
     }
 
-    void Update() {
+    void Update()
+    {
         if (IsDead)
         {
             return;
@@ -42,8 +45,9 @@ public class Player : MonoBehaviour {
         LastRespawned = Time.time;
     }
 
-    public void Die()
+    public void Die(Vector3? respawnPosition = null)
     {
+        RespawnPosition = respawnPosition.HasValue? respawnPosition.Value : transform.position;
         StageManager.GetPoint(Villain, 1);
         IsDead = true;
     }
