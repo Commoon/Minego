@@ -130,9 +130,8 @@ public class DynamicParticle : MonoBehaviour
 
     }
 
-    public void MoveBrown(float force)
+    public void AddForce(Vector2 force)
     {
-        var angle = Random.value * Mathf.PI * 2;
-        rb2d.AddForce(new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * Random.value * force);
+        rb2d.AddForce(force);
     }
 }
