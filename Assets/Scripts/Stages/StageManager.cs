@@ -87,6 +87,9 @@ public class StageManager : MonoBehaviour
     {
         Status = StageStatus.Over;
         TextWinMessage.text = string.Format("Player {0} wins!", player.IsPlayer1 ? 1 : 2);
+        GetPoint(player, 10);
+        GlobalState.Score1 = Player1.Score;
+        GlobalState.Score2 = Player2.Score;
         UIGameOver.Show();
     }
 }

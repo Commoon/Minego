@@ -7,7 +7,7 @@ public class Egg : MonoBehaviour
 {
     public float ExplosionDelay = 2f;
     public float ExplosionRadius = 1f;
-    float createdTime;
+    float livedTime;
     bool exploded = false;
     public float ThrowForce = 100f;
     public float ThrowForceVertical = 100f;
@@ -22,12 +22,13 @@ public class Egg : MonoBehaviour
 
     void Start()
     {
-        createdTime = Time.timeSinceLevelLoad;
+        livedTime = 0f;
     }
 
     void Update()
     {
-        if (!exploded && Time.timeSinceLevelLoad - createdTime >= ExplosionDelay)
+        livedTime += Time.deltaTime;
+        if (!exploded && livedTime >= ExplosionDelay)
         {
             Explode();
         }
