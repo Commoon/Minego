@@ -53,7 +53,7 @@ public class Egg : MonoBehaviour
                     continue;
                 }
                 var player = hit.collider.GetComponent<Player>();
-                player.BeHitted();
+                player.BeHitted(hit);
             }
             else if (hit.collider.gameObject.CompareTag("Destroyable"))
             {

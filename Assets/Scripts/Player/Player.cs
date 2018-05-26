@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public Player Villain;
     public StageManager StageManager;
     public float InvincibleTime = 2.0f;
+    public GameObject DeadPlayerPrefeb;
 
     public bool IsPlayer1
     {
@@ -23,8 +24,10 @@ public class Player : MonoBehaviour
         get { return Time.time - LastRespawned <= InvincibleTime; }
     }
 
-    Vector3 RespawnPosition;
+    Vector3 respawnPosition;
     PlayerController pc;
+    DeadPlayer deadPlayer;
+    Vector2 deadDirection;
 
     private void Awake()
     {
@@ -45,18 +48,39 @@ public class Player : MonoBehaviour
         LastRespawned = Time.time;
     }
 
-    public void Die(Vector3? respawnPosition = null)
+    public void Die(Vector2 direction, Vector3? respawnPosition = null, float? delay = null)
     {
-        RespawnPosition = respawnPosition.HasValue? respawnPosition.Value : transform.position;
+        direction.Normalize();
+        this.respawnPosition = respawnPosition ?? transform.position;
         StageManager.GetPoint(Villain, 1);
         IsDead = true;
+        deadDirection = direction;
+        if (delay.HasValue)
+        {
+            Invoke("InitDead", delay.Value);
+        }
+        else
+        {
+            InitDead();
+        }
+    }
+    public void InitDead()
+    {
+        transform.position = respawnPosition;
+        var deadPlayer = Instantiate(DeadPlayerPrefeb, transform.position, Quaternion.identity).GetComponent<DeadPlayer>();
+        deadPlayer.Init(this, deadDirection);
     }
 
-    public void BeHitted()
+    public void Respwan()
+    {
+        IsDead = false;
+    }
+
+    public void BeHitted(RaycastHit2D hit)
     {
         if (!IsDead && !IsInvincible)
         {
-            Die();
+            Die(-hit.normal);
         }
     }
 }

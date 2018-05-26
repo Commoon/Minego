@@ -4,18 +4,35 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     public string PlayerNumber = "1";
     public float MoveForce = 300f;
     public Vector2 MaxSpeed = new Vector2(5, 20);
     public float JumpForce = 1000f;
     public Transform GroundCheck1;
     public Transform GroundCheck2;
+    public Transform FrontCheck1;
+    public Transform FrontCheck2;
+    public Transform BackCheck1;
+    public Transform BackCheck2;
     public Egg EggPrefab;
     public bool FacingRight;
     [HideInInspector] public Egg Egg = null;
 
-    public bool IsGrounded { get; set; }
+    bool _isGrounded = false;
+    public bool IsGrounded
+    {
+        get { return _isGrounded; }
+        set
+        {
+            _isGrounded = value;
+            if (!_isGrounded)
+            {
+                ground = null;
+            }
+        }
+    }
+    public bool IsFrontWalled = false;
+    public bool IsBackWalled = false;
 
     Player player;
     Rigidbody2D rb2d;
@@ -27,6 +44,7 @@ public class PlayerController : MonoBehaviour
     bool jump = false;
     bool layEgg = false;
     bool isLayingEgg = false;
+    Rigidbody2D ground;
 
     private void Awake()
     {
@@ -87,7 +105,9 @@ public class PlayerController : MonoBehaviour
             return;
         }
         var h = Input.GetAxis(inputHorizontal);
-        if (Mathf.Abs(h * rb2d.velocity.x) < MaxSpeed.x)
+        if (Mathf.Abs(h * rb2d.velocity.x) < MaxSpeed.x && !(
+            IsFrontWalled && (h > 0 && FacingRight || h < 0 && !FacingRight) ||
+            IsBackWalled && (h < 0 && FacingRight || h > 0 && !FacingRight)))
         {
             rb2d.AddForce(Vector2.right * h * MoveForce);
         }
@@ -119,6 +139,9 @@ public class PlayerController : MonoBehaviour
     {
         FacingRight = !FacingRight;
         transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 0));
+        var t = IsFrontWalled;
+        IsFrontWalled = IsBackWalled;
+        IsBackWalled = t;
     }
 
     private void LayEgg()
@@ -139,12 +162,27 @@ public class PlayerController : MonoBehaviour
         Egg.BeThrown(rb2d.velocity, toRight);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void CheckGroundWall(Collision2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") || collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
-            IsGrounded = Physics2D.Linecast(GroundCheck1.position, GroundCheck2.position, (
-                (1 << LayerMask.NameToLayer("Ground")) + (1 << LayerMask.NameToLayer("Obstacle"))));
+            var layerMask = (1 << LayerMask.NameToLayer("Ground")) + (1 << LayerMask.NameToLayer("Obstacle"));
+            IsGrounded = Physics2D.Linecast(GroundCheck1.position, GroundCheck2.position, layerMask);
+            if (IsGrounded)
+            {
+                ground = collision.gameObject.GetComponent<Rigidbody2D>();
+            }
+            IsFrontWalled = Physics2D.Linecast(FrontCheck1.position, FrontCheck2.position, layerMask);
+            IsBackWalled = Physics2D.Linecast(BackCheck1.position, BackCheck2.position, layerMask);
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        CheckGroundWall(collision);
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        CheckGroundWall(collision);
     }
 }
