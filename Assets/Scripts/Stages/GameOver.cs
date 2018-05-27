@@ -10,6 +10,7 @@ public class GameOver : MonoBehaviour
 
     CanvasGroup canvasGroup;
     bool active = false;
+    bool loadingNextStage = false;
 
     private void Awake()
     {
@@ -27,8 +28,9 @@ public class GameOver : MonoBehaviour
         {
             return;
         }
-        if (Input.GetButton("Submit"))
+        if (!loadingNextStage && Input.GetButton("Submit"))
         {
+            loadingNextStage = true;
             SceneManager.LoadScene(NextStage);
         }
     }

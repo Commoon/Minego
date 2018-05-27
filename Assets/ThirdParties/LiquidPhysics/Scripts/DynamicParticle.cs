@@ -19,8 +19,10 @@ public class DynamicParticle : MonoBehaviour
     public Color waterColor, gasColor, lavaColor;//The color of the sprite to be separated inside the shader (the shader has the thresholds for red green or blue in the example)
     float GAS_FLOATABILITY = 7.0f; //How fast does the gas goes up?
     public float particleLifeTime = 3.0f;
+    public float particleScaleDelay = 3.0f;
     float startTime; //How much time before the particle scalesdown and dies	
     Rigidbody2D rb2d;
+    float startScale;
 
     void Awake()
     {
@@ -98,7 +100,12 @@ public class DynamicParticle : MonoBehaviour
         {
             return;
         }
-        float scaleValue = 1.0f - ((Time.time - startTime) / particleLifeTime);
+        var elapsedTime = Time.time - startTime;
+        if (elapsedTime < particleScaleDelay)
+        {
+            return;
+        }
+        float scaleValue = 1.0f - ((elapsedTime - particleScaleDelay) / particleLifeTime);
         Vector2 particleScale = Vector2.one;
         if (scaleValue <= 0)
         {
@@ -106,16 +113,17 @@ public class DynamicParticle : MonoBehaviour
         }
         else
         {
-            particleScale.x = scaleValue;
-            particleScale.y = scaleValue;
+            particleScale.x = startScale * scaleValue;
+            particleScale.y = startScale * scaleValue;
             transform.localScale = particleScale;
         }
     }
 
     // To change particles lifetime externally (like the particle generator)
-    public void SetLifeTime(float time)
+    public void SetLifeTime(float time, float delay)
     {
         particleLifeTime = time;
+        particleScaleDelay = delay;
     }
     // Here we handle the collision events with another particles, in this example water+lava= water-> gas
     void OnCollisionEnter2D(Collision2D other)
@@ -133,5 +141,11 @@ public class DynamicParticle : MonoBehaviour
     public void AddForce(Vector2 force)
     {
         rb2d.AddForce(force);
+    }
+
+    public void SetRadius(float radius)
+    {
+        startScale = radius;
+        transform.localScale = Vector2.one * radius;
     }
 }

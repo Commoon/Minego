@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FloatingPlatform : MonoBehaviour
 {
-    public Transform Platform;
+    public Rigidbody2D Platform;
     public Transform[] Stops;
     public float[] StayTimes;
     public float Speed = 5f;
@@ -26,10 +26,12 @@ public class FloatingPlatform : MonoBehaviour
     {
         if (Time.timeSinceLevelLoad - lastStay <= StayTimes[now])
         {
+            Platform.velocity = Vector2.zero;
             return;
         }
         var next = positive ? 1 : -1;
-        var distance = Stops[now + next].position - Platform.position;
+        var nextPos = Stops[now + next].position;
+        var distance = new Vector2(nextPos.x, nextPos.y) - Platform.position;
         var toMove = Speed * Time.deltaTime;
         if (distance.magnitude <= toMove)
         {
@@ -41,6 +43,7 @@ public class FloatingPlatform : MonoBehaviour
                 positive = !positive;
             }
         }
-        Platform.position = Platform.position + distance.normalized * toMove;
+        Platform.velocity = distance.normalized * toMove / Time.deltaTime;
+        //Platform.position = Platform.position + distance.normalized * toMove;
     }
 }

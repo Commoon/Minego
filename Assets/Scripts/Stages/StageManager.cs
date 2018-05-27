@@ -13,7 +13,6 @@ public enum StageStatus
 
 public class StageManager : MonoBehaviour
 {
-
     public string StageName;
     public Player Player1;
     public Player Player2;
@@ -24,6 +23,8 @@ public class StageManager : MonoBehaviour
     public Text TextWinMessage;
     public Text TextContinue;
     public GameOver UIGameOver;
+    public float StartDelay = 0f;
+    public int WinPoints = 5;
 
     private StageStatus _status = StageStatus.Pending;
     [HideInInspector]
@@ -63,6 +64,13 @@ public class StageManager : MonoBehaviour
         UpdateScore(Player1, GlobalState.Score1);
         UpdateScore(Player2, GlobalState.Score2);
         Status = StageStatus.Started;
+        Player1.IsDead = Player2.IsDead = true;
+        Invoke("StartStage", StartDelay);
+    }
+
+    public void StartStage()
+    {
+        Player1.IsDead = Player2.IsDead = false;
     }
 
     void Update()
@@ -80,14 +88,14 @@ public class StageManager : MonoBehaviour
     {
         var textScore = player.IsPlayer1 ? TextScore1 : TextScore2;
         player.Score = score;
-        textScore.text = string.Format(Player1.IsPlayer1 ? "1P: {0:0000}" : "2P: {0:0000}", player.Score);
+        textScore.text = string.Format(player.IsPlayer1 ? "1P: {0:0000}" : "2P: {0:0000}", player.Score);
     }
 
     public void Win(Player player)
     {
         Status = StageStatus.Over;
         TextWinMessage.text = string.Format("Player {0} wins!", player.IsPlayer1 ? 1 : 2);
-        GetPoint(player, 10);
+        GetPoint(player, WinPoints);
         GlobalState.Score1 = Player1.Score;
         GlobalState.Score2 = Player2.Score;
         UIGameOver.Show();

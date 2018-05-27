@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class River : MonoBehaviour
 {
-    public float ResistiveForce = 40f;
-    public Transform RespawnLocation;
-    PolygonCollider2D area;
+    public float ResistiveForce = 25f;
+    public Transform RespawnPosition;
+    public float DieDelay = 2f;
+    Vector2[] points;
     List<DynamicParticle> surfaceParticles;
 
     private void Awake()
     {
-        area = GetComponent<PolygonCollider2D>();
+        var area = GetComponent<PolygonCollider2D>();
+        points = new Vector2[area.points.Length];
+        for (var i = 0; i < area.points.Length; ++i)
+        {
+            points[i] = Vector2.Scale(area.points[i], transform.localScale);
+        }
     }
 
 
@@ -22,10 +28,10 @@ public class River : MonoBehaviour
     bool CheckPositionInArea(Vector2 v)
     {
         var p = new Vector2(transform.position.x, transform.position.y);
-        for (var i = 1; i < area.points.Length; ++i)
+        for (var i = 1; i < points.Length; ++i)
         {
-            var a = p + area.points[i] - v;
-            var b = p + area.points[i - 1] - v;
+            var a = p + points[i] - v;
+            var b = p + points[i - 1] - v;
             if (a.y * b.x - a.x * b.y > 0)
             {
                 return false;
@@ -36,18 +42,18 @@ public class River : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player") && CheckPositionInArea(collision.transform.position))
         {
             var rb2d = collision.attachedRigidbody;
             if (collision.gameObject.CompareTag("Player"))
             {
                 var player = collision.GetComponent<Player>();
-                if (!player.IsDead && CheckPositionInArea(collision.transform.position))
+                if (!player.GetComponent<PlayerController>().IsGrounded || CheckPositionInArea(collision.transform.position + Vector3.up))
                 {
-                    player.Die(RespawnLocation.position);
+                    player.BeHitted(RespawnPosition.position - collision.transform.position, true, RespawnPosition.position, DieDelay);
                 }
             }
-            rb2d.AddForce(-ResistiveForce * rb2d.velocity.normalized);
+            rb2d.AddForce(-ResistiveForce * collision.friction * rb2d.mass * rb2d.velocity.normalized);
         }
     }
 }
