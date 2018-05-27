@@ -13,11 +13,14 @@ public class Egg : MonoBehaviour
     public float ThrowForceVertical = 100f;
 
     Rigidbody2D rb2d;
+    Animator anim;
     bool instantBomb = false;
+    bool nearExplosion = false;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     void Start()
@@ -28,9 +31,17 @@ public class Egg : MonoBehaviour
     void Update()
     {
         livedTime += Time.deltaTime;
-        if (!exploded && livedTime >= ExplosionDelay)
+        if (!exploded)
         {
-            Explode();
+            if (!nearExplosion && livedTime >= ExplosionDelay - 1)
+            {
+                nearExplosion = true;
+                anim.SetTrigger("NearExplosion");
+            }
+            else if (livedTime >= ExplosionDelay)
+            {
+                Explode();
+            }
         }
     }
 
@@ -40,6 +51,7 @@ public class Egg : MonoBehaviour
         {
             return;
         }
+        anim.SetTrigger("Explode");
         var hits = Physics2D.CircleCastAll(transform.position, ExplosionRadius, Vector2.zero, 0f,
                 (1 << LayerMask.NameToLayer("Player")) + (1 << LayerMask.NameToLayer("Obstacle")));
         foreach (var hit in hits)
@@ -72,7 +84,11 @@ public class Egg : MonoBehaviour
         rb2d.isKinematic = true;
         rb2d.angularVelocity = 0f;
         rb2d.velocity = Vector2.zero;
-        Destroy(gameObject, 0.5f);
+    }
+
+    public void CompleteExplosion()
+    {
+        Destroy(gameObject);
     }
 
     public void BeThrown(Vector2 velocity, bool toRight)

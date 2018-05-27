@@ -6,6 +6,9 @@ using Minego;
 public class Blower : MonoBehaviour, IButtonControlled
 {
     public float BlowForce = 24f;
+
+    Animator anim;
+
     bool _active = false;
     public bool Active
     {
@@ -16,11 +19,19 @@ public class Blower : MonoBehaviour, IButtonControlled
     public void Activate()
     {
         Active = true;
+        anim.SetBool("Active", true);
     }
 
     public void Deactivate()
     {
         Active = false;
+        anim.SetBool("Active", false);
+    }
+
+
+    private void Awake()
+    {
+        anim = GetComponentInChildren<Animator>();
     }
 
     private void OnTriggerStay2D(Collider2D collision)

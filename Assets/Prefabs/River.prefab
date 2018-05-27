@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4122844706037552}
   - component: {fileID: 212422861853331568}
-  m_Layer: 12
+  m_Layer: 4
   m_Name: River1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   - component: {fileID: 4973454196026966}
   - component: {fileID: 114512513843683576}
   - component: {fileID: 60056697130748674}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: River
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4087795505978498}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: RespawnPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,8 +79,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1067266682855946}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.17, y: 1.61, z: 0.1}
-  m_LocalScale: {x: 1.565525, y: 1.565525, z: 1.565525}
+  m_LocalPosition: {x: 0.17, y: 2.1, z: 0}
+  m_LocalScale: {x: 0.66, y: 0.66, z: 1.565525}
   m_Children: []
   m_Father: {fileID: 4973454196026966}
   m_RootOrder: 0
@@ -92,7 +92,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1910378830725858}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.67, y: -1.18, z: 0.1}
+  m_LocalPosition: {x: -2.67, y: -1.18, z: -1.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4122844706037552}
@@ -141,6 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ResistiveForce: 25
   RespawnLocation: {fileID: 4087795505978498}
+  DieDelay: 2
 --- !u!212 &212422861853331568
 SpriteRenderer:
   m_ObjectHideFlags: 1

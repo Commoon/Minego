@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,8 +32,8 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    public bool IsFrontWalled = false;
-    public bool IsBackWalled = false;
+    [HideInInspector] public bool IsFrontWalled = false;
+    [HideInInspector] public bool IsBackWalled = false;
 
     Player player;
     Rigidbody2D rb2d;
@@ -55,6 +56,15 @@ public class PlayerController : MonoBehaviour
         inputVertical = "P" + PlayerNumber + " Vertical";
         inputFire = "P" + PlayerNumber + " Fire";
         inputJump = "P" + PlayerNumber + " Jump";
+    }
+
+    internal void InitDead()
+    {
+        rb2d.velocity = Vector2.zero;
+    }
+
+    internal void Respawn()
+    {
     }
 
     private void Update()
@@ -81,7 +91,7 @@ public class PlayerController : MonoBehaviour
                     ThrowEgg(h > 0);
                 }
             }
-            else
+            else if (Egg != null)
             {
                 Egg.Explode();
             }
@@ -121,9 +131,7 @@ public class PlayerController : MonoBehaviour
         }
         if (jump)
         {
-            rb2d.AddForce(new Vector2(0f, JumpForce));
-            IsGrounded = false;
-            jump = false;
+            Jump();
         }
         if (Mathf.Abs(rb2d.velocity.x) > MaxSpeed.x)
         {
@@ -133,6 +141,15 @@ public class PlayerController : MonoBehaviour
         {
             rb2d.velocity = new Vector2(rb2d.velocity.x, Mathf.Sign(rb2d.velocity.y) * MaxSpeed.y);
         }
+        anim.SetFloat("HorizontalSpeed", Mathf.Abs(rb2d.velocity.x));
+    }
+
+    void Jump()
+    {
+        rb2d.AddForce(new Vector2(0f, JumpForce));
+        IsGrounded = false;
+        jump = false;
+        anim.SetBool("Jumping", true);
     }
 
     private void Flip()
@@ -171,6 +188,7 @@ public class PlayerController : MonoBehaviour
             if (IsGrounded)
             {
                 ground = collision.gameObject.GetComponent<Rigidbody2D>();
+                anim.SetBool("Jumping", false);
             }
             IsFrontWalled = Physics2D.Linecast(FrontCheck1.position, FrontCheck2.position, layerMask);
             IsBackWalled = Physics2D.Linecast(BackCheck1.position, BackCheck2.position, layerMask);

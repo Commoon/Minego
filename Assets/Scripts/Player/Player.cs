@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
-    public const float CenterFromGround = 0.8624f;
+    public const float CenterFromFoot = 0.8484f;
 
     public bool IsDead = false;
     public Player Villain;
@@ -24,14 +23,16 @@ public class Player : MonoBehaviour
         get { return Time.time - LastRespawned <= InvincibleTime; }
     }
 
-    Vector3 respawnPosition;
+    Vector3? respawnPosition;
     PlayerController pc;
+    Animator anim;
     DeadPlayer deadPlayer;
     Vector2 deadDirection;
 
     private void Awake()
     {
         pc = GetComponent<PlayerController>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -42,19 +43,27 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Respawn()
+    public void StartRespawn()
     {
+        anim.SetTrigger("Respawn");
+    }
+
+    public void Respawn()
+    { 
         IsDead = false;
         LastRespawned = Time.time;
+        pc.Respawn();
     }
 
     public void Die(Vector2 direction, Vector3? respawnPosition = null, float? delay = null)
     {
         direction.Normalize();
-        this.respawnPosition = respawnPosition ?? transform.position;
+        this.respawnPosition = respawnPosition;
         StageManager.GetPoint(Villain, 1);
         IsDead = true;
         deadDirection = direction;
+        pc.InitDead();
+        anim.SetTrigger("Die");
         if (delay.HasValue)
         {
             Invoke("InitDead", delay.Value);
@@ -64,23 +73,29 @@ public class Player : MonoBehaviour
             InitDead();
         }
     }
+
     public void InitDead()
     {
-        transform.position = respawnPosition;
+        if (respawnPosition.HasValue)
+        {
+            transform.position = respawnPosition.Value;
+        }
         var deadPlayer = Instantiate(DeadPlayerPrefeb, transform.position, Quaternion.identity).GetComponent<DeadPlayer>();
         deadPlayer.Init(this, deadDirection);
     }
 
-    public void Respwan()
-    {
-        IsDead = false;
-    }
-
-    public void BeHitted(RaycastHit2D hit)
+    public void BeHitted(RaycastHit2D hit, Vector3? respawnPosition = null, float? delay = null)
     {
         if (!IsDead && !IsInvincible)
         {
-            Die(-hit.normal);
+            Die(-hit.normal, respawnPosition, delay);
+        }
+    }
+    public void BeHitted(Vector2 direction, bool force = false, Vector3? respawnPosition = null, float? delay = null)
+    {
+        if (!IsDead && (force || !IsInvincible))
+        {
+            Die(direction, respawnPosition, delay);
         }
     }
 }
