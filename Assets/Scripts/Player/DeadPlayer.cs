@@ -23,11 +23,12 @@ public class DeadPlayer : MonoBehaviour
     Vector2 direction;
     Vector2 origin;
     Vector2 targetCorner;
+    bool disappearing = false;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     public void Init(Player player, Vector2 direction)
@@ -41,6 +42,7 @@ public class DeadPlayer : MonoBehaviour
         frames = 0;
         origin = rb2d.position;
         started = false;
+        disappearing = false;
         targetCorner.x = origin.x < 0 ? 14 : -14;
         targetCorner.y = origin.y < 0 ? 7 : -7;
     }
@@ -52,6 +54,10 @@ public class DeadPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (disappearing)
+        {
+            return;
+        }
         if (!started)
         {
             var distance = rb2d.position - origin;
@@ -96,14 +102,16 @@ public class DeadPlayer : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!started)
+        if (!started || disappearing)
         {
             return;
         }
         if (collision.gameObject == Player.gameObject)
         {
             Player.StartRespawn();
-            Destroy(gameObject);
+            disappearing = true;
+            rb2d.velocity = Vector2.zero;
+            anim.SetTrigger("Disappear");
         }
     }
 }
