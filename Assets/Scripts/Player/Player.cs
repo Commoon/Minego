@@ -51,6 +51,7 @@ public class Player : MonoBehaviour
     public void Respawn()
     { 
         IsDead = false;
+        anim.SetBool("IsDead", false);
         LastRespawned = Time.time;
         pc.Respawn();
     }
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
         deadDirection = direction;
         pc.InitDead();
         anim.SetTrigger("Die");
+        anim.SetBool("IsDead", true);
         if (delay.HasValue)
         {
             Invoke("InitDead", delay.Value);

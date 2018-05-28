@@ -3855,6 +3855,16 @@ Prefab:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114663872208771540, guid: 6600ae93abd071c46a5f9184d7c9994c,
+        type: 2}
+      propertyPath: StageName
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114297903095660272, guid: 6600ae93abd071c46a5f9184d7c9994c,
+        type: 2}
+      propertyPath: NextStage
+      value: Stage 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6600ae93abd071c46a5f9184d7c9994c, type: 2}
   m_IsPrefabParent: 0
