@@ -56,7 +56,14 @@ public class Trap : MonoBehaviour, IButtonControlled
         if (collision.gameObject.CompareTag("Player"))
         {
             var player = collision.GetComponent<Player>();
-            player.BeHitted(transform.up, false, RespawnPosition.position, DieDelay);
+            if (RespawnPosition == null)
+            {
+                player.BeHitted(transform.up, false, null, DieDelay);
+            }
+            else
+            {
+                player.BeHitted(transform.up, false, RespawnPosition.position, DieDelay);
+            }
         }
     }
 }
