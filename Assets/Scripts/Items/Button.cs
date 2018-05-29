@@ -94,18 +94,21 @@ public class Button : MonoBehaviour
             }
             UpdateTransform(newScale);
         }
-        else if (pressed && !isPressing)
+        else if (!isPressing && Sprite.localScale.y < originalHeight)
         {
             if (Time.time - startTime <= DeactivateDelay)
             {
                 return;
             }
+            if (pressed)
+            {
+                Deactivate();
+                pressed = false;
+            }
             var newScale = new Vector3(Sprite.localScale.x, Sprite.localScale.y + PressSpeed * Time.deltaTime, Sprite.localScale.z);
             if (newScale.y >= originalHeight)
             {
                 newScale.y = originalHeight;
-                Deactivate();
-                pressed = false;
             }
             UpdateTransform(newScale);
         }
