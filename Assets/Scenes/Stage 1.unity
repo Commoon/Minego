@@ -216,6 +216,7 @@ Transform:
   m_Children:
   - {fileID: 1829210636}
   - {fileID: 474927213}
+  - {fileID: 827303737}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -563,6 +564,36 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
+--- !u!1001 &422875572
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 154903716}
+    m_Modifications:
+    - target: {fileID: 1846795067743510, guid: 9500941fef923804e85138daa2aeea0c, type: 2}
+      propertyPath: m_Name
+      value: WoodenBox (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068956882813070, guid: 9500941fef923804e85138daa2aeea0c, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068956882813070, guid: 9500941fef923804e85138daa2aeea0c, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068956882813070, guid: 9500941fef923804e85138daa2aeea0c, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068956882813070, guid: 9500941fef923804e85138daa2aeea0c, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1.6999999
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 9500941fef923804e85138daa2aeea0c, type: 2}
+  m_IsPrefabParent: 0
 --- !u!4 &450761941 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4335965449030054, guid: ba5dc389e3b364d41af0b50a0bc1bc40,
@@ -587,6 +618,11 @@ Transform:
   m_Father: {fileID: 1139704993}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &827303737 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4068956882813070, guid: 9500941fef923804e85138daa2aeea0c,
+    type: 2}
+  m_PrefabInternal: {fileID: 422875572}
 --- !u!4 &848132479
 Transform:
   m_ObjectHideFlags: 0
@@ -1627,7 +1663,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 47265b7b008f0b04ba0becfffa18c575, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e389a7ddf1f39ab448b1796258583a1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
